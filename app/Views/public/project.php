@@ -210,7 +210,12 @@ foreach ($files as $idx => $f) {
                                 <figure class="project-gallery__fig">
                                     <img src="<?= e(upload_url($safeImg)) ?>"
                                          alt="<?= e($img['alt_text'] ?: $project['title'] . ' image') ?>"
-                                         loading="lazy" decoding="async">
+                                         loading="lazy" decoding="async"
+                                         data-lightbox="project-gallery"
+                                         data-title="<?= e($img['alt_text'] ?: $project['title']) ?>"
+                                         role="button" tabindex="0"
+                                         aria-haspopup="dialog"
+                                         aria-label="View full-size image: <?= e($img['alt_text'] ?: $project['title']) ?>">
                                 </figure>
                             </li>
                         <?php endforeach; ?>

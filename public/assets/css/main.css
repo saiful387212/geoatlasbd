@@ -260,15 +260,20 @@ p  { margin: 0 0 var(--space-3); }
     overflow: hidden;
 }
 
-/* নতুন SVG ম্যাপের স্টাইল */
-.hero__map-svg {
+.hero__map {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    aspect-ratio: 437.80637 / 601.16034;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+.hero__map-svg {
     width: 100%;
     height: 100%;
-    padding: 10%; /* ম্যাপটি চারপাশ থেকে একটু ভেতরে থাকবে */
-    z-index: 0; /* গ্রিডের নিচে থাকবে */
-    pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
+    object-fit: contain;
+    pointer-events: none;
 }
 
 /* গ্রিডের স্টাইল */
@@ -284,32 +289,48 @@ p  { margin: 0 0 var(--space-3); }
 /* পিনগুলো সবচেয়ে ওপরে থাকবে */
 .hero__pin {
     position: absolute;
-    z-index: 2; 
-    /* আপনার আগের পিনের স্টাইল এখানে থাকবে */
-    display: inline-flex; align-items: center; gap: .4rem;
-    padding: .25rem .6rem;
-    background: var(--navy);
-    border: 1px solid var(--line-strong);
-    border-radius: 999px;
-    font-size: .8rem;
-    color: var(--teal-soft);
-
+    z-index: 1;
+    left: var(--pin-x);
+    top: var(--pin-y);
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--light);
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 4px rgba(20,184,166,.25);
 }
 .hero__pin::before {
-    content: ""; width: 8px; height: 8px; border-radius: 50%;
-    background: var(--teal); box-shadow: 0 0 0 4px rgba(20,184,166,.2);
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border: 1px solid var(--teal-soft);
+    border-radius: 50%;
 }
-.hero__pin--dhaka      { top: 32%; left: 42%; }
-.hero__pin--padma      { top: 55%; left: 30%; }
-.hero__pin--sundarbans { top: 68%; left: 50%; }
+.hero__pin span {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: .25rem .6rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--navy);
+    color: var(--teal-soft);
+    font-size: .8rem;
+    white-space: nowrap;
+}
+.hero__pin--dhaka      { --pin-x: 51.5%; --pin-y: 48%; }
+.hero__pin--padma      { --pin-x: 47%; --pin-y: 54%; }
+.hero__pin--sundarbans { --pin-x: 30%; --pin-y: 78%; }
 
 @media (prefers-reduced-motion: no-preference) {
-    .hero__pin { animation: pinPulse 3.2s ease-in-out infinite; }
-    .hero__pin--padma      { animation-delay: .4s; }
-    .hero__pin--sundarbans { animation-delay: .8s; }
+    .hero__pin::before { animation: pinPulse 3.2s ease-in-out infinite; }
+    .hero__pin--padma::before { animation-delay: .4s; }
+    .hero__pin--sundarbans::before { animation-delay: .8s; }
     @keyframes pinPulse {
-        0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-3px); }
+        0%, 100% { box-shadow: 0 0 0 4px rgba(20,184,166,.2); }
+        50%      { box-shadow: 0 0 0 7px rgba(20,184,166,.08); }
     }
 }
 
@@ -1081,5 +1102,91 @@ p  { margin: 0 0 var(--space-3); }
     position: absolute !important;
     left: -9999px !important;
     width: 1px; height: 1px;
+    overflow: hidden;
+}
+/* ============================================================
+   Lightbox Styles
+   ============================================================ */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(11, 23, 42, 0.95); /* ডার্ক নেইভি ব্যাকগ্রাউন্ড */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+    backdrop-filter: blur(8px);
+}
+
+.lightbox.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.lightbox__content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    text-align: center;
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.lightbox.is-active .lightbox__content {
+    transform: scale(1);
+}
+
+.lightbox__content img {
+    display: block;
+    max-width: 100%;
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox__title {
+    color: var(--light);
+    margin-top: var(--space-3);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.lightbox__close {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    background: var(--navy-2);
+    border: 1px solid var(--line);
+    color: var(--light);
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 10;
+}
+
+.lightbox__close:hover {
+    background: var(--teal);
+    color: var(--navy);
+    border-color: var(--teal);
+}
+
+/* স্ক্রল বন্ধ করার জন্য */
+body.lightbox-open {
     overflow: hidden;
 }

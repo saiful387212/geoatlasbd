@@ -45,3 +45,72 @@
         else mq.addListener(onChange);
     }
 })();
+/* Lightbox Functionality */
+(function () {
+    'use strict';
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxClose = document.querySelector('.lightbox__close');
+    const images = document.querySelectorAll('[data-lightbox="project-gallery"]');
+
+    if (!lightbox || !lightboxImg || !lightboxTitle || !lightboxClose || images.length === 0) return;
+
+    let lastFocusedImage = null;
+    let clearImageTimer = null;
+
+    function openLightbox(img) {
+        window.clearTimeout(clearImageTimer);
+        lastFocusedImage = img;
+        lightboxImg.src = img.currentSrc || img.src;
+        lightboxImg.alt = img.alt;
+        lightboxTitle.textContent = img.dataset.title || img.alt || '';
+
+        lightbox.classList.add('is-active');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('lightbox-open');
+        lightboxClose.focus();
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('is-active');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('lightbox-open');
+        if (lastFocusedImage) lastFocusedImage.focus();
+        clearImageTimer = window.setTimeout(() => { lightboxImg.src = ''; }, 300);
+    }
+
+    images.forEach(img => {
+        img.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLightbox(img);
+        });
+
+        img.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(img);
+            }
+        });
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+
+    lightbox.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            lightboxClose.focus();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('is-active')) {
+            closeLightbox();
+        }
+    });
+})();

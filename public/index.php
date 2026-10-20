@@ -59,8 +59,13 @@ $router->get('/admin/categories/{id}/edit',  fn($p) => (new AdminCategoryControl
 $router->post('/admin/categories/{id}',      fn($p) => (new AdminCategoryController())->update($p));
 $router->post('/admin/categories/{id}/delete', fn($p) => (new AdminCategoryController())->destroy($p));
 
+use App\Controllers\AdminMessageController;
+
+// ... (আগের রাউটগুলো)
+
 // ---- Admin messages ----
-$router->get('/admin/messages', fn() => (new AdminContentController())->messages());
-$router->post('/admin/messages/update', fn() => (new AdminContentController())->updateMessage());
+$router->get('/admin/messages',                 fn()   => (new AdminMessageController())->index());
+$router->get('/admin/messages/{id}',            fn($p) => (new AdminMessageController())->show($p));
+$router->post('/admin/messages/{id}/action',    fn($p) => (new AdminMessageController())->action($p));
 
 $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

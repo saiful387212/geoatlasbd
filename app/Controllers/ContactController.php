@@ -47,15 +47,9 @@ final class ContactController
             return;
         }
 
-        // ---- 2. Honeypot ----
-        // A field invisible to humans, named like an innocent form field.
-        if (!empty($_POST['website'] ?? '')) {
-            $this->recordSpam('honeypot');
-            // Pretend success to not tip off bots.
-            $this->flashSuccess();
-            $this->redirectBack();
-            return;
-        }
+        // A browser autofill can populate a honeypot, so preserve the message
+        // and flag it for review instead of discarding its contents.
+        $honeypotTriggered = !empty($_POST['contact_reference'] ?? '');
 
         // ---- 3. Timing gate ----
         $startedAt = (int) ($_POST['_form_started_at'] ?? 0);
@@ -104,7 +98,7 @@ final class ContactController
                      form_started_at, submitted_at, is_spam, spam_reason)
                  VALUES
                     (:name, :email, :subject, :message, :ip_hash, :ua,
-                     :started, :submitted, 0, NULL)'
+                     :started, :submitted, :is_spam, :spam_reason)'
             );
             $stmt->execute([
                 ':name'      => $name,
@@ -115,6 +109,8 @@ final class ContactController
                 ':ua'        => mb_substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255),
                 ':started'   => date('Y-m-d H:i:s', (int) ($startedAt / 1000)),
                 ':submitted' => gmdate('Y-m-d H:i:s'),
+                ':is_spam'   => $honeypotTriggered ? 1 : 0,
+                ':spam_reason' => $honeypotTriggered ? 'honeypot' : null,
             ]);
         } catch (\Throwable $e) {
             // Do not leak DB detail to the user.

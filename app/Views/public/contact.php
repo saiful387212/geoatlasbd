@@ -35,8 +35,9 @@ $err = fn(string $k) => isset($errors[$k]) ? e($errors[$k]) : null;
 
                 <!-- Honeypot: hidden from humans; bots fill it in -->
                 <div class="hp-field" aria-hidden="true">
-                    <label for="website">Website (leave blank)</label>
-                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                    <label for="contact-reference">Leave this field empty</label>
+                    <input type="text" id="contact-reference" name="contact_reference"
+                           tabindex="-1" autocomplete="new-password">
                 </div>
 
                 <div class="form-row">

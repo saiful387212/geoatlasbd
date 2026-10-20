@@ -40,5 +40,13 @@ $currentPath     = $_SERVER['REQUEST_URI'] ?? '/';
 <?php if (!empty($needsContactScript)): ?>
     <script src="<?= e(url('/assets/js/contact.js')) ?>" defer></script>
 <?php endif; ?>
+<!-- Lightbox Overlay -->
+<div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="lightbox__close" aria-label="Close image viewer">&times;</button>
+    <div class="lightbox__content">
+        <img id="lightbox-img" src="" alt="">
+        <p id="lightbox-title" class="lightbox__title"></p>
+    </div>
+</div>
 </body>
 </html>
