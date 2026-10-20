@@ -63,11 +63,11 @@ return [
         'key'  => $env['APP_KEY'],
     ],
     'db'         => [
-        'host'    => $env['DB_HOST'],
+        'host'    => $env['sql300.infinityfree.com'],
         'port'    => (int) ($env['DB_PORT'] ?? 3306),
-        'name'    => $env['DB_NAME'],
-        'user'    => $env['DB_USER'],
-        'pass'    => $env['DB_PASS'],
+        'name'    => $env['if0_42235863_geoatlasbd'],
+        'user'    => $env['if0_42235863R'],
+        'pass'    => $env['irvan387212'],
         'charset' => $env['DB_CHARSET'] ?? 'utf8mb4',
     ],
     'uploads'    => [

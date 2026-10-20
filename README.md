@@ -104,9 +104,9 @@ Add to `C:\Windows\System32\drivers\etc\hosts` (as Administrator):
 
 Restart Apache.
 
-Set `APP_URL=http://geoatlas.local` in `.env`, restart Apache, and visit **http://geoatlas.local/**. Open the site through Apache; do not open PHP files directly from the file system or visit files under `app/Views/`.
+Visit **http://geoatlas.local/**. URLs are generated from the front controller's installation path, so local and hosted links use the current site and do not depend on a hard-coded hostname in `APP_URL`. Open the site through Apache; do not open PHP files directly from the file system or visit files under `app/Views/`.
 
-For a local subfolder install instead of the virtual host, visit **http://localhost/geoatlasbd/**. Set `APP_URL=http://localhost/geoatlasbd/public` in `.env` for that setup. The project-root rules redirect this URL into `public/` and deny direct web access to application and configuration files.
+For a local subfolder install instead of the virtual host, visit **http://localhost/geoatlasbd/**. The project-root rules redirect this URL into `public/` and deny direct web access to application and configuration files.
 
 ### 8. Verify the DB connection
 ```bash
