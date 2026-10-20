@@ -69,3 +69,12 @@ $router->get('/admin/messages/{id}',            fn($p) => (new AdminMessageContr
 $router->post('/admin/messages/{id}/action',    fn($p) => (new AdminMessageController())->action($p));
 
 $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');
+use App\Controllers\AdminAccountController;
+
+// ... (আগের রাউটগুলো)
+
+// ---- Admin account ----
+$router->get('/admin/account/password',  fn() => (new AdminAccountController())->showPasswordForm());
+$router->post('/admin/account/password', fn() => (new AdminAccountController())->updatePassword());
+
+$router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

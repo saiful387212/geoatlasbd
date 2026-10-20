@@ -11,13 +11,16 @@ declare(strict_types=1);
                 <span class="brand__tagline">Understanding Bangladesh Through Maps.</span>
             </span>
         </a>
+        
 
         <button class="nav-toggle" type="button"
                 aria-controls="primary-navigation" aria-expanded="false"
                 data-nav-toggle>
             <span class="nav-toggle__bars" aria-hidden="true"></span>
             <span class="visually-hidden">Toggle navigation</span>
+            
         </button>
+        
 
         <?php require __DIR__ . '/nav.php'; ?>
     </div>

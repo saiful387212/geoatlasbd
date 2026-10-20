@@ -28,6 +28,10 @@ $logoutCsrf  = $currentUser ? Csrf::token('admin_logout') : null;
                    class="<?= nav_is_active($_SERVER['REQUEST_URI'] ?? '', '/admin/projects') ? 'is-active' : '' ?>">Projects</a>
                 <a href="<?= e(url('/admin/categories')) ?>"
                    class="<?= nav_is_active($_SERVER['REQUEST_URI'] ?? '', '/admin/categories') ? 'is-active' : '' ?>">Categories</a>
+                <a href="<?= e(url('/admin/account/password')) ?>"
+                   class="<?= nav_is_active($_SERVER['REQUEST_URI'] ?? '', '/admin/account/password') ? 'is-active' : '' ?>">
+                    Password
+                </a>
                 <a href="<?= e(url('/admin/messages')) ?>"
                    class="<?= nav_is_active($_SERVER['REQUEST_URI'] ?? '', '/admin/messages') ? 'is-active' : '' ?>">Messages</a>
                 <a href="<?= e(url('/')) ?>" target="_blank" rel="noopener">View site ↗</a>
