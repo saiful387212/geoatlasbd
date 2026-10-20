@@ -9,7 +9,7 @@ declare(strict_types=1);
         <h1>Welcome, <?= e($user['name']) ?></h1>
         <p class="muted">
             Signed in as <strong><?= e($user['email']) ?></strong>.
-            Project, category, and message management arrive in Phase 8.
+            Manage projects, categories, and incoming contact messages.
         </p>
     </div>
 
@@ -36,12 +36,9 @@ declare(strict_types=1);
         </div>
     </div>
 
-    <div class="admin-notice">
-        <h2 class="admin-notice__title">Next steps</h2>
-        <ul class="admin-checklist">
-            <li>Change your password on first login (Phase 8 will add the form).</li>
-            <li>Confirm your email address is unique and correct.</li>
-            <li>Keep SMTP credentials out of <code>.env</code> until email is configured.</li>
-        </ul>
+    <div class="admin-section-links">
+        <a class="admin-panel" href="<?= e(url('/admin/projects')) ?>"><h2>Manage projects</h2><p class="muted">Create, edit, publish, or remove map projects.</p></a>
+        <a class="admin-panel" href="<?= e(url('/admin/categories')) ?>"><h2>Manage categories</h2><p class="muted">Organize the themes used by projects.</p></a>
+        <a class="admin-panel" href="<?= e(url('/admin/messages')) ?>"><h2>Review messages</h2><p class="muted">Read, track, and remove contact submissions.</p></a>
     </div>
 </section>

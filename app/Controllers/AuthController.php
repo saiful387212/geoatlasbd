@@ -6,6 +6,8 @@ namespace App\Controllers;
 use App\Services\Auth;
 use App\Services\Csrf;
 use App\Services\RateLimiter;
+use PDOException;
+use RuntimeException;
 
 final class AuthController
 {
@@ -57,7 +59,15 @@ final class AuthController
             exit;
         }
 
-        $ok = Auth::attempt($email, $password, RateLimiter::ipHash());
+        try {
+            $ok = Auth::attempt($email, $password, RateLimiter::ipHash());
+        } catch (PDOException | RuntimeException $e) {
+            error_log('[admin login] Authentication unavailable: ' . $e->getMessage());
+            http_response_code(503);
+            $_SESSION['_login_error'] = 'Sign-in is temporarily unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
+            header('Location: ' . url('/admin/login'), true, 303);
+            exit;
+        }
 
         if (!$ok) {
             // Deliberate small delay to further frustrate automated enumeration.

@@ -12,6 +12,7 @@ use App\Controllers\ProjectController;
 use App\Controllers\SearchController;
 use App\Controllers\AuthController;
 use App\Controllers\AdminDashboardController;
+use App\Controllers\AdminContentController;
 
 SecurityHeaders::apply();
 
@@ -34,5 +35,13 @@ $router->post('/admin/logout',   fn()      => (new AuthController())->logout());
 // ---- Admin protected ----
 $router->get('/admin',           fn()      => (new AdminDashboardController())->index());
 $router->get('/admin/dashboard', fn()      => (new AdminDashboardController())->index());
+$router->get('/admin/projects',  fn()      => (new AdminContentController())->projects());
+$router->post('/admin/projects/save', fn()  => (new AdminContentController())->saveProject());
+$router->post('/admin/projects/delete', fn() => (new AdminContentController())->deleteProject());
+$router->get('/admin/categories', fn()     => (new AdminContentController())->categories());
+$router->post('/admin/categories/save', fn() => (new AdminContentController())->saveCategory());
+$router->post('/admin/categories/delete', fn() => (new AdminContentController())->deleteCategory());
+$router->get('/admin/messages',  fn()      => (new AdminContentController())->messages());
+$router->post('/admin/messages/update', fn() => (new AdminContentController())->updateMessage());
 
 $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

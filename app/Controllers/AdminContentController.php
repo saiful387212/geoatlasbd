@@ -17,27 +17,35 @@ final class AdminContentController
     public function projects(): void
     {
         $user = RequireAuth::check();
-        $pdo = Db::pdo();
-        $projects = $pdo->query(
-            'SELECT p.id, p.title, p.slug, p.status, p.featured, p.published_at,
-                    c.name AS category_name
-               FROM projects p
-          LEFT JOIN categories c ON c.id = p.category_id
-           ORDER BY p.updated_at DESC, p.id DESC'
-        )->fetchAll();
-        $categories = Category::allWithProjectCounts();
+        $databaseError = null;
+        $projects = [];
+        $categories = [];
         $editProject = null;
-        $editId = filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_INT);
-        if ($editId !== null && $editId !== false && $editId > 0) {
-            $stmt = $pdo->prepare(
-                'SELECT id, category_id, title, slug, summary, description,
-                        study_area, tags, status, featured
-                   FROM projects WHERE id = :id'
-            );
-            $stmt->execute([':id' => $editId]);
-            $editProject = $stmt->fetch() ?: null;
+        try {
+            $pdo = Db::pdo();
+            $projects = $pdo->query(
+                'SELECT p.id, p.title, p.slug, p.status, p.featured, p.published_at,
+                        c.name AS category_name
+                   FROM projects p
+              LEFT JOIN categories c ON c.id = p.category_id
+               ORDER BY p.updated_at DESC, p.id DESC'
+            )->fetchAll();
+            $categories = Category::allWithProjectCounts();
+            $editId = filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_INT);
+            if ($editId !== null && $editId !== false && $editId > 0) {
+                $stmt = $pdo->prepare(
+                    'SELECT id, category_id, title, slug, summary, description,
+                            study_area, tags, status, featured
+                       FROM projects WHERE id = :id'
+                );
+                $stmt->execute([':id' => $editId]);
+                $editProject = $stmt->fetch() ?: null;
+            }
+        } catch (PDOException | RuntimeException $e) {
+            error_log('[admin projects] Load failed: ' . $e->getMessage());
+            $databaseError = 'Project data is unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
         }
-        $this->render('Projects', 'projects', compact('user', 'projects', 'categories', 'editProject'));
+        $this->render('Projects', 'projects', compact('user', 'projects', 'categories', 'editProject', 'databaseError'));
     }
 
     public function saveProject(): void
@@ -62,7 +70,6 @@ final class AdminContentController
             $this->failAndRedirect('/admin/projects', 'Enter a title, valid unique slug, summary, and category.');
         }
 
-        $pdo = Db::pdo();
         $fields = [
             ':category_id' => $categoryId,
             ':title' => $title,
@@ -76,6 +83,7 @@ final class AdminContentController
         ];
 
         try {
+            $pdo = Db::pdo();
             if (is_int($id) && $id > 0) {
                 $fields[':id'] = $id;
                 $stmt = $pdo->prepare(
@@ -105,7 +113,7 @@ final class AdminContentController
                 );
                 $stmt->execute($fields);
             }
-        } catch (PDOException $e) {
+        } catch (PDOException | RuntimeException $e) {
             error_log('[admin projects] Save failed: ' . $e->getMessage());
             $this->failAndRedirect('/admin/projects', 'Could not save the project. Check that its slug is unique and the database schema is current.');
         }
@@ -124,7 +132,7 @@ final class AdminContentController
         try {
             $stmt = Db::pdo()->prepare('DELETE FROM projects WHERE id = :id');
             $stmt->execute([':id' => $id]);
-        } catch (PDOException $e) {
+        } catch (PDOException | RuntimeException $e) {
             error_log('[admin projects] Delete failed: ' . $e->getMessage());
             $this->failAndRedirect('/admin/projects', 'Could not delete the project. Remove or reassign dependent records first.');
         }
@@ -135,18 +143,25 @@ final class AdminContentController
     public function categories(): void
     {
         $user = RequireAuth::check();
-        $categories = Category::allWithProjectCounts();
+        $databaseError = null;
+        $categories = [];
         $editCategory = null;
-        $editId = filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_INT);
-        if ($editId !== null && $editId !== false && $editId > 0) {
-            $stmt = Db::pdo()->prepare(
-                'SELECT id, name, slug, description, color, icon, sort_order
-                   FROM categories WHERE id = :id'
-            );
-            $stmt->execute([':id' => $editId]);
-            $editCategory = $stmt->fetch() ?: null;
+        try {
+            $categories = Category::allWithProjectCounts();
+            $editId = filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_INT);
+            if ($editId !== null && $editId !== false && $editId > 0) {
+                $stmt = Db::pdo()->prepare(
+                    'SELECT id, name, slug, description, color, icon, sort_order
+                       FROM categories WHERE id = :id'
+                );
+                $stmt->execute([':id' => $editId]);
+                $editCategory = $stmt->fetch() ?: null;
+            }
+        } catch (PDOException | RuntimeException $e) {
+            error_log('[admin categories] Load failed: ' . $e->getMessage());
+            $databaseError = 'Category data is unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
         }
-        $this->render('Categories', 'categories', compact('user', 'categories', 'editCategory'));
+        $this->render('Categories', 'categories', compact('user', 'categories', 'editCategory', 'databaseError'));
     }
 
     public function saveCategory(): void
@@ -190,7 +205,7 @@ final class AdminContentController
                 );
             }
             $stmt->execute($params);
-        } catch (PDOException $e) {
+        } catch (PDOException | RuntimeException $e) {
             error_log('[admin categories] Save failed: ' . $e->getMessage());
             $this->failAndRedirect('/admin/categories', 'Could not save the category. Check that its slug is unique and the database schema is current.');
         }
@@ -208,7 +223,7 @@ final class AdminContentController
         try {
             $stmt = Db::pdo()->prepare('DELETE FROM categories WHERE id = :id');
             $stmt->execute([':id' => $id]);
-        } catch (PDOException $e) {
+        } catch (PDOException | RuntimeException $e) {
             error_log('[admin categories] Delete failed: ' . $e->getMessage());
             $this->failAndRedirect('/admin/categories', 'This category is still used by projects. Reassign those projects before deleting it.');
         }
@@ -219,12 +234,19 @@ final class AdminContentController
     public function messages(): void
     {
         $user = RequireAuth::check();
-        $messages = Db::pdo()->query(
-            'SELECT id, name, email, subject, message, is_read, is_spam, submitted_at
-               FROM contact_messages
-           ORDER BY is_read ASC, submitted_at DESC, id DESC'
-        )->fetchAll();
-        $this->render('Messages', 'messages', compact('user', 'messages'));
+        $databaseError = null;
+        $messages = [];
+        try {
+            $messages = Db::pdo()->query(
+                'SELECT id, name, email, subject, message, is_read, is_spam, submitted_at
+                   FROM contact_messages
+               ORDER BY is_read ASC, submitted_at DESC, id DESC'
+            )->fetchAll();
+        } catch (PDOException | RuntimeException $e) {
+            error_log('[admin messages] Load failed: ' . $e->getMessage());
+            $databaseError = 'Messages are unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
+        }
+        $this->render('Messages', 'messages', compact('user', 'messages', 'databaseError'));
     }
 
     public function updateMessage(): void
@@ -244,7 +266,7 @@ final class AdminContentController
             }
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
-        } catch (PDOException $e) {
+        } catch (PDOException | RuntimeException $e) {
             error_log('[admin messages] Update failed: ' . $e->getMessage());
             $this->failAndRedirect('/admin/messages', 'Could not update the message. Check the database schema and permissions.');
         }
