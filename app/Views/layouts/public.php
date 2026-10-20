@@ -1,5 +1,10 @@
 <?php
 declare(strict_types=1);
+if (defined('GEOATLAS_PUBLIC_LAYOUT_RENDERED')) {
+    return;
+}
+define('GEOATLAS_PUBLIC_LAYOUT_RENDERED', true);
+
 /** @var string $content */
 /** @var string $title */
 /** @var string $metaDescription */

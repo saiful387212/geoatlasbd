@@ -1,5 +1,10 @@
 <?php
 declare(strict_types=1);
+if (defined('GEOATLAS_ADMIN_LAYOUT_RENDERED')) {
+    return;
+}
+define('GEOATLAS_ADMIN_LAYOUT_RENDERED', true);
+
 /** @var string $content */
 /** @var string $title */
 /** @var array  $config */
