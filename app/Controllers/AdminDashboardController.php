@@ -13,13 +13,13 @@ final class AdminDashboardController
     {
         $user = RequireAuth::check();
 
-        // Small dashboard metric set — read-only, prepared.
         $stats = [
-            'projects'       => 0,
-            'published'      => 0,
-            'drafts'         => 0,
-            'categories'     => 0,
-            'unread_messages'=> 0,
+            'projects'        => 0,
+            'published'       => 0,
+            'drafts'          => 0,
+            'categories'      => 0,
+            'unread_messages' => 0,
+            'featured'        => 0,
         ];
         try {
             $pdo = Db::pdo();
@@ -28,13 +28,23 @@ final class AdminDashboardController
             $stats['drafts']          = (int) $pdo->query("SELECT COUNT(*) FROM projects WHERE status='draft'")->fetchColumn();
             $stats['categories']      = (int) $pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn();
             $stats['unread_messages'] = (int) $pdo->query('SELECT COUNT(*) FROM contact_messages WHERE is_spam=0 AND is_read=0')->fetchColumn();
+            $stats['featured']        = (int) $pdo->query('SELECT COUNT(*) FROM projects WHERE featured=1 AND status="published"')->fetchColumn();
         } catch (\Throwable $e) {
             error_log('[admin dashboard] ' . $e->getMessage());
-            // Stats stay zeroed; dashboard still renders.
         }
 
-        $logoutCsrf = Csrf::token('admin_logout');
-        $title      = 'Dashboard — Admin — GeoAtlas Bangladesh';
+        $recent = [];
+        try {
+            $stmt = Db::pdo()->query(
+                "SELECT id, title, slug, status, updated_at
+                   FROM projects ORDER BY updated_at DESC LIMIT 5"
+            );
+            $recent = $stmt->fetchAll();
+        } catch (\Throwable $e) {
+            error_log('[admin dashboard recent] ' . $e->getMessage());
+        }
+
+        $title = 'Dashboard — Admin — GeoAtlas Bangladesh';
 
         ob_start();
         require dirname(__DIR__) . '/Views/admin/dashboard.php';

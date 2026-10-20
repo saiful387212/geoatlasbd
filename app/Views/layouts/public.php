@@ -16,7 +16,7 @@ $currentPath     = $_SERVER['REQUEST_URI'] ?? '/';
     <meta name="description" content="<?= e($metaDescription) ?>">
     <meta name="theme-color" content="#0B172A">
 
-    <link rel="icon" type="image/svg+xml" href="<?= e(url('/assets/img/logo.svg')) ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= e(url('/assets/img/logo.png')) ?>">
     <link rel="preload" href="<?= e(url('/assets/css/main.css')) ?>" as="style">
     <link rel="stylesheet" href="<?= e(url('/assets/css/main.css')) ?>">
     <script src="<?= e(url('/assets/js/main.js')) ?>" defer></script>

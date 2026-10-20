@@ -10,6 +10,7 @@ declare(strict_types=1);
         <h1>Projects</h1>
         <p class="muted">Create drafts, edit project details, and publish selected work.</p>
     </div>
+    <?php if ($databaseError !== null): ?><div class="flash flash--error" role="alert"><?= e($databaseError) ?></div><?php endif; ?>
 
     <div class="admin-content-grid">
         <section class="admin-panel">

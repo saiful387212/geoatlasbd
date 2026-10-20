@@ -43,6 +43,7 @@ final class AdminContentController
             }
         } catch (PDOException | RuntimeException $e) {
             error_log('[admin projects] Load failed: ' . $e->getMessage());
+            http_response_code(503);
             $databaseError = 'Project data is unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
         }
         $this->render('Projects', 'projects', compact('user', 'projects', 'categories', 'editProject', 'databaseError'));
@@ -62,11 +63,12 @@ final class AdminContentController
         $studyArea = $this->text($_POST['study_area'] ?? null, 255);
         $tags = $this->text($_POST['tags'] ?? null, 1000);
         $categoryId = filter_var($_POST['category_id'] ?? null, FILTER_VALIDATE_INT);
+        $idProvided = array_key_exists('id', $_POST);
         $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT);
         $status = ($_POST['status'] ?? '') === 'published' ? 'published' : 'draft';
 
         if ($title === '' || !preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)
-            || $summary === '' || !$categoryId || ($id !== false && $id !== null && $id < 1)) {
+            || $summary === '' || !$categoryId || ($idProvided && (!is_int($id) || $id < 1))) {
             $this->failAndRedirect('/admin/projects', 'Enter a title, valid unique slug, summary, and category.');
         }
 
@@ -159,6 +161,7 @@ final class AdminContentController
             }
         } catch (PDOException | RuntimeException $e) {
             error_log('[admin categories] Load failed: ' . $e->getMessage());
+            http_response_code(503);
             $databaseError = 'Category data is unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
         }
         $this->render('Categories', 'categories', compact('user', 'categories', 'editCategory', 'databaseError'));
@@ -176,10 +179,11 @@ final class AdminContentController
         $color = $this->text($_POST['color'] ?? null, 7);
         $icon = $this->text($_POST['icon'] ?? null, 50);
         $sortOrder = filter_var($_POST['sort_order'] ?? '0', FILTER_VALIDATE_INT);
+        $idProvided = array_key_exists('id', $_POST);
         $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT);
         if ($name === '' || !preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)
             || !is_int($sortOrder) || ($color !== '' && !preg_match('/^#[0-9a-fA-F]{6}$/', $color))
-            || ($id !== false && $id !== null && $id < 1)) {
+            || ($idProvided && (!is_int($id) || $id < 1))) {
             $this->failAndRedirect('/admin/categories', 'Enter a name, valid unique slug, and six-digit hex color.');
         }
         $params = [
@@ -244,6 +248,7 @@ final class AdminContentController
             )->fetchAll();
         } catch (PDOException | RuntimeException $e) {
             error_log('[admin messages] Load failed: ' . $e->getMessage());
+            http_response_code(503);
             $databaseError = 'Messages are unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
         }
         $this->render('Messages', 'messages', compact('user', 'messages', 'databaseError'));
@@ -315,13 +320,13 @@ final class AdminContentController
         return mb_substr($value, 0, $max);
     }
 
-    private function failAndRedirect(string $path, string $message): never
+    private function failAndRedirect(string $path, string $message): void
     {
         flash('error', $message);
         $this->redirect($path);
     }
 
-    private function redirect(string $path): never
+    private function redirect(string $path): void
     {
         header('Location: ' . url($path), true, 303);
         exit;

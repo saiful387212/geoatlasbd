@@ -6,7 +6,7 @@ Personal GIS portfolio. Stack: **HTML5 · CSS3 · Vanilla JS · PHP 8 · MySQL �
 
 ## Current state: Public site and infrastructure
 
-The public home and about pages are implemented alongside the PHP/PDO infrastructure. Project and category content on the home page requires a working MySQL database; the public shell remains available if the database is unavailable.
+The public pages and admin project, category, and message sections are implemented alongside the PHP/PDO infrastructure. Database-backed content and admin sign-in require valid MySQL credentials and the matching schema; the public shell remains available if the database is unavailable.
 
 ## First-time setup
 
@@ -34,8 +34,20 @@ FLUSH PRIVILEGES;
 
 Use a strong password; put the **same** password in `.env` as `DB_PASS`.
 
+If MySQL reports `Access denied` for `geoatlas_app`, run the following in phpMyAdmin while signed in as a MySQL administrator, replacing the example password with your own. Put that exact password in `.env` as `DB_PASS`:
+
+```sql
+CREATE USER IF NOT EXISTS 'geoatlas_app'@'localhost'
+  IDENTIFIED BY 'REPLACE_WITH_A_STRONG_PASSWORD';
+ALTER USER 'geoatlas_app'@'localhost'
+  IDENTIFIED BY 'REPLACE_WITH_A_STRONG_PASSWORD';
+GRANT SELECT, INSERT, UPDATE, DELETE
+  ON geoatlas_bd.* TO 'geoatlas_app'@'localhost';
+FLUSH PRIVILEGES;
+```
+
 ### 3. Database schema
-This checkout does not include `database/schema.sql` or the seed SQL files. Obtain the matching schema and data before importing anything. Until then, the public site renders, but the home page displays a warning and database-backed content is unavailable.
+Import the included `database/schema.sql` in phpMyAdmin. The admin login cannot succeed until the `users` and `audit_log` tables exist and an administrator has been seeded. The public site renders without the database, but database-backed content and admin features remain unavailable.
 
 ### 4. Seed categories & sample projects
 Category and sample-project seed files are also not included. This step can be completed once those files and the matching schema are available.
@@ -44,8 +56,10 @@ Category and sample-project seed files are also not included. This step can be c
 From the project root:
 
 ```bash
-php database/seed_admin.php "admin@geoatlas.local" "ReplaceWithStrongPassword!" "Site Administrator"
+C:\xampp\php\php.exe database\seed_admin.php "admin@geoatlas.local" "ReplaceWithYourOwnStrongPassword" "Site Administrator"
 ```
+
+Use a password of at least 12 characters. This creates the first admin; if the email already exists, it resets that account's password and clears its lockout. Use the email and password from this command to sign in.
 
 The script hashes the password with **Argon2id** — the plaintext is never written to disk. It requires the matching `users` table to have been created first.
 
@@ -129,7 +143,7 @@ Public registration is **disabled**. Administrators are created from the CLI onl
 From the project root:
 
 ```bash
-php database/seed_admin.php "admin@geoatlas.local" "A-Strong-Passphrase-Here!" "Site Administrator"
+C:\xampp\php\php.exe database\seed_admin.php "admin@geoatlas.local" "ReplaceWithYourOwnStrongPassword" "Site Administrator"
 ```
 
 - The script uses **Argon2id** via `password_hash()` — the plaintext password is never stored on disk.
@@ -140,6 +154,8 @@ php database/seed_admin.php "admin@geoatlas.local" "A-Strong-Passphrase-Here!" "
 ### Sign in
 
 Visit `http://geoatlas.local/admin/login` and sign in with the email and password you supplied.
+
+After signing in, use the admin navigation to create, edit, publish, and delete projects; manage categories; and review, mark, or delete contact messages. These sections require the database credentials and schema from the earlier setup steps.
 
 ### Lockout behaviour
 
@@ -157,7 +173,7 @@ Both limits and window lengths are constants at the top of
 Run the same seed command with a **new** password:
 
 ```bash
-php database/seed_admin.php "admin@geoatlas.local" "NewPassphrase!" "Site Administrator"
+C:\xampp\php\php.exe database\seed_admin.php "admin@geoatlas.local" "ReplaceWithYourOwnStrongPassword" "Site Administrator"
 ```
 
 This updates the existing row (same email) with a fresh Argon2id hash and clears any lockout.

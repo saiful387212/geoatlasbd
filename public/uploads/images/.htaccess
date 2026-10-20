@@ -1,0 +1,12 @@
+# Only real image files may be served from this folder.
+# Deny everything, then re-allow the exact image extensions.
+Require all denied
+
+<FilesMatch "(?i)\.(jpe?g|png|webp)$">
+    Require all granted
+    # Force the browser to treat the response as an image, not text.
+    <IfModule mod_headers.c>
+        Header set X-Content-Type-Options "nosniff"
+        Header set Content-Disposition "inline"
+    </IfModule>
+</FilesMatch>

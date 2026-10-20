@@ -43,18 +43,23 @@ foreach ($featured as $p) {
         </div>
 
         <div class="hero__panel" aria-hidden="true">
-            <div class="hero__panel-grid"></div>
-            <div class="hero__pin hero__pin--dhaka">
-                <span>Dhaka</span>
-            </div>
-            <div class="hero__pin hero__pin--padma">
-                <span>Padma</span>
-            </div>
-            <div class="hero__pin hero__pin--sundarbans">
-                <span>Sundarbans</span>
-            </div>
-        </div>
+    <!-- নিখুঁত বাংলাদেশ ম্যাপ (Inline SVG) -->
+    <svg class="hero__map-svg" viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
+        <path d="assets\img\bd-outline.svg" fill="none" stroke="#14B8A6" stroke-width="2" opacity="0.5"/>
+    </svg>
+
+    <div class="hero__panel-grid"></div>
+    
+    <div class="hero__pin hero__pin--dhaka">
+        <span>Dhaka</span>
     </div>
+    <div class="hero__pin hero__pin--padma">
+        <span>Padma</span>
+    </div>
+    <div class="hero__pin hero__pin--sundarbans">
+        <span>Sundarbans</span>
+    </div>
+</div>
 </section>
 
 <!-- ================= FEATURED PROJECTS ================= -->

@@ -8,6 +8,7 @@ declare(strict_types=1);
         <h1>Contact messages</h1>
         <p class="muted">Review messages submitted through the public contact form.</p>
     </div>
+    <?php if ($databaseError !== null): ?><div class="flash flash--error" role="alert"><?= e($databaseError) ?></div><?php endif; ?>
     <?php if ($messages === []): ?>
         <div class="admin-panel"><p class="muted">No messages found.</p></div>
     <?php else: ?>

@@ -6,7 +6,7 @@ declare(strict_types=1);
 <section class="admin-login">
     <div class="admin-login__card">
         <header class="admin-login__head">
-            <img src="<?= e(url('/assets/img/logo.svg')) ?>" alt="" width="40" height="40">
+            <img src="<?= e(url('/assets/img/logo.png')) ?>" alt="" width="40" height="40">
             <h1>Administrator sign in</h1>
             <p class="admin-login__lead">Sign in to manage GIS projects, categories, and messages.</p>
         </header>

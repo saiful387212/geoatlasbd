@@ -253,20 +253,39 @@ p  { margin: 0 0 var(--space-3); }
     aspect-ratio: 4 / 3;
     border-radius: var(--radius-lg);
     border: 1px solid var(--line-strong);
+    /* ব্যাকগ্রাউন্ড গ্রেডিয়েন্ট আগের মতোই থাকবে */
     background:
         linear-gradient(135deg, rgba(20,184,166,0.08), transparent 60%),
         var(--navy-2);
     overflow: hidden;
 }
+
+/* নতুন SVG ম্যাপের স্টাইল */
+.hero__map-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 10%; /* ম্যাপটি চারপাশ থেকে একটু ভেতরে থাকবে */
+    z-index: 0; /* গ্রিডের নিচে থাকবে */
+    pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
+}
+
+/* গ্রিডের স্টাইল */
 .hero__panel-grid {
     position: absolute; inset: 0;
     background-image:
         linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px),
         linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px);
     background-size: 32px 32px;
+    z-index: 1; /* গ্রিড ম্যাপের ওপরে থাকবে */
 }
+
+/* পিনগুলো সবচেয়ে ওপরে থাকবে */
 .hero__pin {
     position: absolute;
+    z-index: 2; 
+    /* আপনার আগের পিনের স্টাইল এখানে থাকবে */
     display: inline-flex; align-items: center; gap: .4rem;
     padding: .25rem .6rem;
     background: var(--navy);
@@ -274,6 +293,7 @@ p  { margin: 0 0 var(--space-3); }
     border-radius: 999px;
     font-size: .8rem;
     color: var(--teal-soft);
+
 }
 .hero__pin::before {
     content: ""; width: 8px; height: 8px; border-radius: 50%;
@@ -720,8 +740,8 @@ p  { margin: 0 0 var(--space-3); }
     display: grid; gap: var(--space-3);
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
-.project-gallery__fig { margin: 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
-.project-gallery__fig img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/3; }
+.project-gallery__fig { margin: 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--navy-2); }
+.project-gallery__fig img { width: 100%; height: auto; }
 
 /* Tags + downloads */
 .tag-list {
@@ -803,7 +823,7 @@ p  { margin: 0 0 var(--space-3); }
     border: 1px solid var(--line);
     background: var(--navy-2);
 }
-.project-cover img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.project-cover img { width: 100%; height: auto; }
 
 /* Case sections */
 .case-section { margin-bottom: var(--space-6); }

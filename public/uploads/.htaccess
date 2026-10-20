@@ -1,4 +1,11 @@
-# Never execute PHP from the uploads directory.
+# ============================================================
+# GeoAtlas Bangladesh — uploads directory hardening
+# ============================================================
+
+# 1) No directory listings, ever.
+Options -Indexes -ExecCGI
+
+# 2) Disable PHP execution entirely (all known module names).
 <IfModule mod_php.c>
     php_flag engine off
 </IfModule>
@@ -9,10 +16,35 @@
     php_flag engine off
 </IfModule>
 
-Options -ExecCGI -Indexes
-RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .pht .phar
-RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .pht .phar
+# 3) Remove PHP handlers and types.
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .pht .phar .cgi .pl .py
+RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .pht .phar .cgi .pl .py
 
-<FilesMatch "\.(php|phtml|phar|pht|php3|php4|php5|php7|php8)$">
+# 4) Deny access to any file whose name ends in an executable extension.
+<FilesMatch "\.(php|phtml|php[0-9]?|pht|phar|cgi|pl|py|sh|exe|bat|cmd|com|jsp|asp|aspx|svg|xml|html?)$">
     Require all denied
 </FilesMatch>
+
+# 5) Block access to hidden/dotfiles.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# 6) Block .htaccess, .htpasswd, and backups.
+<FilesMatch "(?i)^(?:\.htaccess|\.htpasswd|.*\.bak|.*\.orig|.*\.swp)$">
+    Require all denied
+</FilesMatch>
+
+# 7) Safe response headers — no execution, no sniffing, force download for PDFs.
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox"
+</IfModule>
+
+# 8) Deny executing any request that could be mistaken for a script.
+#    Belt-and-braces: even if mod_mime is misconfigured, we refuse to run anything here.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+</IfModule>

@@ -5,6 +5,8 @@ namespace App\Services;
 
 use App\Models\User;
 use PDO;
+use PDOException;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -120,7 +122,13 @@ final class Auth
             return self::$cachedUser;
         }
         $s = Session::user();
-        $u = $s ? User::findById((int) $s['user_id']) : null;
+        try {
+            $u = $s ? User::findById((int) $s['user_id']) : null;
+        } catch (PDOException | RuntimeException $e) {
+            error_log('[auth] Unable to verify the current admin session: ' . $e->getMessage());
+            self::logout();
+            return null;
+        }
         if ($u === null || (int) $u['is_active'] !== 1) {
             self::logout();
             return null;

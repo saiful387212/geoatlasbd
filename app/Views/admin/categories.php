@@ -9,6 +9,7 @@ declare(strict_types=1);
         <h1>Categories</h1>
         <p class="muted">Organize projects into browsable themes.</p>
     </div>
+    <?php if ($databaseError !== null): ?><div class="flash flash--error" role="alert"><?= e($databaseError) ?></div><?php endif; ?>
     <div class="admin-content-grid">
         <section class="admin-panel">
             <h2><?= $editCategory ? 'Edit category' : 'Add category' ?></h2>

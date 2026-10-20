@@ -9,7 +9,7 @@ $logoutCsrf  = $currentUser ? Csrf::token('admin_logout') : null;
 <header class="admin-header">
     <div class="admin-header__inner">
         <a class="admin-brand" href="<?= e(url($currentUser ? '/admin/dashboard' : '/admin/login')) ?>">
-            <img src="<?= e(url('/assets/img/logo.svg')) ?>" alt="" width="28" height="28">
+            <img src="<?= e(url('/assets/img/logo.png')) ?>" alt="" width="28" height="28">
             <span>
                 <span class="admin-brand__name">GeoAtlas Admin</span>
                 <?php if ($currentUser): ?>

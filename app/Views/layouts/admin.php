@@ -12,7 +12,7 @@ $title = $title ?? 'Admin — GeoAtlas Bangladesh';
     <meta name="robots" content="noindex, nofollow">
     <title><?= e($title) ?></title>
     <meta name="theme-color" content="#0B172A">
-    <link rel="icon" type="image/svg+xml" href="<?= e(url('/assets/img/logo.svg')) ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= e(url('/assets/img/logo.png')) ?>">
     <link rel="stylesheet" href="<?= e(url('/assets/css/main.css')) ?>">
     <link rel="stylesheet" href="<?= e(url('/assets/css/admin.css')) ?>">
 </head>

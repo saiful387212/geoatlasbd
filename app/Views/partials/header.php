@@ -5,7 +5,7 @@ declare(strict_types=1);
 <header class="site-header">
     <div class="container site-header__inner">
         <a class="brand" href="<?= e(url('/')) ?>" aria-label="GeoAtlas Bangladesh — home">
-            <img class="brand__mark" src="<?= e(url('/assets/img/logo.svg')) ?>" alt="" width="36" height="36">
+            <img class="brand__mark" src="<?= e(url('/assets/img/logo.png')) ?>" alt="" width="36" height="36">
             <span class="brand__text">
                 <span class="brand__name">GeoAtlas Bangladesh</span>
                 <span class="brand__tagline">Understanding Bangladesh Through Maps.</span>

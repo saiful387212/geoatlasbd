@@ -227,3 +227,205 @@
 }
 .admin-body .form-field input:focus { outline: 3px solid var(--teal); outline-offset: 2px; }
 .btn--block { width: 100%; }
+/* ============================================================
+   Phase 8 — admin tables, forms, media grids
+   ============================================================ */
+
+.admin-page__head--row {
+    display: flex; justify-content: space-between; align-items: end;
+    gap: var(--space-3); flex-wrap: wrap;
+}
+
+.admin-filters {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+.admin-filters input,
+.admin-filters select {
+    padding: .6rem .8rem;
+    background: var(--navy);
+    color: var(--light);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font: inherit;
+}
+.admin-filters input { min-width: 240px; flex: 1 1 240px; }
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--navy-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-size: .92rem;
+}
+.admin-table th,
+.admin-table td {
+    text-align: left;
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+}
+.admin-table th {
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--teal-soft);
+    background: rgba(20,184,166,.06);
+    font-weight: 600;
+}
+.admin-table tr:last-child td { border-bottom: 0; }
+.admin-table a { color: var(--light); }
+.admin-table a:hover { color: var(--teal-soft); }
+.admin-table .t-actions { white-space: nowrap; }
+.admin-table .t-actions > * { margin-right: .75rem; }
+.admin-table .t-actions > *:last-child { margin-right: 0; }
+.admin-table .t-muted { color: var(--muted); font-size: .8rem; }
+.admin-table .t-danger { color: #FCA5A5; }
+.admin-table .t-danger:hover { color: #F87171; }
+
+.cat-dot {
+    display: inline-block;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--c, var(--teal));
+    margin-right: .4rem;
+    vertical-align: middle;
+}
+
+.status-pill {
+    display: inline-block;
+    padding: .15rem .55rem;
+    border-radius: 999px;
+    font-size: .72rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.status-pill--published { background: rgba(20,184,166,.15); color: var(--teal-soft); border: 1px solid rgba(20,184,166,.35); }
+.status-pill--draft     { background: rgba(148,163,184,.12); color: var(--muted); border: 1px solid var(--line); }
+
+.inline-form { display: inline; }
+.btn-link {
+    background: transparent; border: 0; padding: 0;
+    color: var(--teal);
+    cursor: pointer;
+    font: inherit;
+}
+.btn-link:hover { text-decoration: underline; }
+
+.btn--danger {
+    background: #DC2626;
+    color: white;
+    border-color: #DC2626;
+}
+.btn--danger:hover { background: #B91C1C; border-color: #B91C1C; }
+
+/* Admin form */
+.admin-form fieldset {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin: 0 0 var(--space-4);
+    background: var(--navy-2);
+}
+.admin-form legend {
+    padding: 0 .5rem;
+    font-weight: 700;
+    color: var(--teal-soft);
+    font-size: .95rem;
+}
+.admin-form .form-row {
+    display: grid; gap: var(--space-3);
+    grid-template-columns: 1fr;
+    margin-bottom: var(--space-3);
+}
+@media (min-width: 640px) { .admin-form .form-row { grid-template-columns: 1fr 1fr; } }
+
+.form-field { margin-bottom: var(--space-3); }
+.form-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: .35rem;
+    color: var(--light);
+}
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form input[type="email"],
+.admin-form input[type="color"],
+.admin-form input[type="file"],
+.admin-form select,
+.admin-form textarea {
+    width: 100%;
+    padding: .7rem .85rem;
+    background: var(--navy);
+    color: var(--light);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font: inherit;
+}
+.admin-form input[type="color"] { padding: .25rem; height: 42px; }
+.admin-form textarea { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: .9rem; }
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+.form-field--check label { display: flex; align-items: center; gap: .5rem; }
+.form-field--check input { width: auto; }
+
+.field-hint { color: var(--muted); font-size: .8rem; margin: .35rem 0 0; }
+.field-error { color: #FCA5A5; font-size: .85rem; margin: .35rem 0 0; }
+
+.admin-form__actions {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+}
+
+.cover-preview {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+.cover-preview img { border-radius: var(--radius); border: 1px solid var(--line); }
+
+.media-grid {
+    display: grid; gap: var(--space-2);
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    margin-top: var(--space-3);
+}
+.media-tile {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--navy);
+    text-align: center;
+    padding-bottom: .5rem;
+}
+.media-tile img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.media-tile form { padding: .4rem; }
+
+.admin-panel {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    background: var(--navy-2);
+    margin-bottom: var(--space-4);
+}
+.admin-panel__title { margin: 0 0 var(--space-3); color: var(--teal-soft); font-size: 1rem; }
+
+.admin-actions {
+    display: flex; gap: var(--space-2); flex-wrap: wrap;
+    margin: var(--space-4) 0;
+}
+
+.confirm-summary {
+    display: grid; gap: var(--space-2);
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin: 0;
+}
+.confirm-summary dt {
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--teal-soft); font-weight: 600;
+}
+.confirm-summary dd { margin: 0; color: var(--light); }

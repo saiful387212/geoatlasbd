@@ -8,6 +8,7 @@ use App\Services\Csrf;
 use App\Services\RateLimiter;
 use PDOException;
 use RuntimeException;
+use Throwable;
 
 final class AuthController
 {
@@ -64,7 +65,7 @@ final class AuthController
         } catch (PDOException | RuntimeException $e) {
             error_log('[admin login] Authentication unavailable: ' . $e->getMessage());
             http_response_code(503);
-            $_SESSION['_login_error'] = 'Sign-in is temporarily unavailable. Check the database connection and confirm the GeoAtlas schema is installed.';
+            $_SESSION['_login_error'] = $this->authenticationUnavailableMessage($e);
             header('Location: ' . url('/admin/login'), true, 303);
             exit;
         }
@@ -90,6 +91,28 @@ final class AuthController
 
         header('Location: ' . url($dest), true, 303);
         exit;
+    }
+
+    private function authenticationUnavailableMessage(Throwable $exception): string
+    {
+        for ($cause = $exception; $cause !== null; $cause = $cause->getPrevious()) {
+            if (!$cause instanceof PDOException) {
+                continue;
+            }
+
+            $driverCode = is_array($cause->errorInfo) ? (int) ($cause->errorInfo[1] ?? 0) : 0;
+            if ($driverCode === 1045) {
+                return 'MySQL rejected the configured database account. Set DB_USER and DB_PASS in .env to match the MySQL account, and grant it access to geoatlas_bd.';
+            }
+            if ($driverCode === 1049) {
+                return 'The geoatlas_bd database does not exist. Create it in MySQL, import the GeoAtlas schema, and then create the administrator account.';
+            }
+            if ($driverCode === 1146) {
+                return 'The GeoAtlas users table is missing. Import the matching database schema, then create the administrator account.';
+            }
+        }
+
+        return 'Sign-in is temporarily unavailable. Check the database connection, import the GeoAtlas schema, and confirm an administrator account exists.';
     }
 
     public function logout(): void

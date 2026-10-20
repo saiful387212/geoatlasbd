@@ -5,7 +5,7 @@ $year = date('Y');
 <footer class="site-footer">
     <div class="container site-footer__inner">
         <div class="site-footer__brand">
-            <img src="<?= e(url('/assets/img/logo.svg')) ?>" alt="" width="28" height="28">
+            <img src="<?= e(url('/assets/img/logo.png')) ?>" alt="" width="28" height="28">
             <span>GeoAtlas Bangladesh</span>
         </div>
 
