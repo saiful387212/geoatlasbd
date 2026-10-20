@@ -1,0 +1,26 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs & cache
+storage/logs/*
+!storage/logs/.gitkeep
+storage/cache/*
+!storage/cache/.gitkeep
+
+# User uploads (keep the directories, not the files)
+public/uploads/images/*
+!public/uploads/images/.gitkeep
+public/uploads/pdfs/*
+!public/uploads/pdfs/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Vendor (only if Composer is ever added)
+/vendor/

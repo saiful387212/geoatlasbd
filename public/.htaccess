@@ -1,0 +1,41 @@
+# GeoAtlas Bangladesh — public docroot rules
+Options -Indexes +FollowSymLinks
+
+# Front controller rewrite
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Serve existing files/dirs directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Everything else goes through index.php
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Block access to dotfiles
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Baseline headers (SecurityHeaders middleware also sets these)
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+</IfModule>
+
+# Disable directory listing fallback
+<IfModule mod_autoindex.c>
+    IndexIgnore *
+</IfModule>
+# Reject encoded slashes / traversal patterns in URLs
+<IfModule mod_rewrite.c>
+    RewriteCond %{THE_REQUEST} (%2f|%5c) [NC]
+    RewriteRule ^ - [F,L]
+</IfModule>
+# Block indexing of admin area even if a crawler ignores meta tags
+<If "%{REQUEST_URI} =~ m#^/admin(/|$)#">
+    Header always set X-Robots-Tag "noindex, nofollow, noarchive"
+    Header always set Cache-Control "no-store, no-cache, must-revalidate"
+</If>

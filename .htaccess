@@ -1,0 +1,14 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ %{REQUEST_URI}public/ [R=302,L]
+    RewriteRule ^(?:app|config|database|storage)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:\.env(?:\..*)?|README\.md|\.gitignore)$ - [F,L,NC]
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "^(?:\.env(?:\..*)?|README\.md|\.gitignore)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
