@@ -52,6 +52,7 @@ function safe_href(?string $href): ?string
 
 /**
  * Return a safe path relative to /uploads/ for an image/PDF row.
+ * Accepts older records that stored only the generated basename.
  * Rejects traversal and absolute paths. Returns null if unsafe.
  */
 function safe_upload_path(?string $relativePath, string $expectedSubdir): ?string
@@ -65,6 +66,13 @@ function safe_upload_path(?string $relativePath, string $expectedSubdir): ?strin
     if (str_contains($relativePath, '..')) return null;
     if (str_contains($relativePath, '\\')) return null;
     $relativePath = ltrim($relativePath, '/');
+
+    // Older uploader versions persisted only the generated filename.
+    if (!str_contains($relativePath, '/')) {
+        $relativePath = $expectedSubdir . '/' . $relativePath;
+    } elseif (str_starts_with($relativePath, 'uploads/' . $expectedSubdir . '/')) {
+        $relativePath = substr($relativePath, strlen('uploads/'));
+    }
 
     // Must start with the expected subdir (images/ or pdfs/)
     if (!str_starts_with($relativePath, $expectedSubdir . '/')) {

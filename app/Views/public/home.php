@@ -78,12 +78,13 @@ foreach ($featured as $p) {
                 <?php foreach ($featured as $p): ?>
                     <?php
                     $catColor = $p['category_color'] ?: '#14B8A6';
-                    $hasCover = !empty($p['cover_image']);
+                    $coverPath = safe_upload_path($p['cover_image'] ?? null, 'images');
+                    $hasCover = $coverPath !== null;
                     ?>
                     <article class="project-card">
                         <div class="project-card__media" aria-hidden="<?= $hasCover ? 'false' : 'true' ?>">
                             <?php if ($hasCover): ?>
-                                <img src="<?= e(upload_url($p['cover_image'])) ?>"
+                                <img src="<?= e(upload_url($coverPath)) ?>"
                                      alt="" loading="lazy" decoding="async">
                             <?php else: ?>
                                 <div class="project-card__placeholder" style="--cat-color: <?= e($catColor) ?>">
